@@ -1,0 +1,30 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="behaviors/operator-behavior.html">
+<link rel="import" href="behaviors/element-behavior.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <pm-logic
+      when="1"
+      greater-than="2"
+      valid="{{ valid }}"
+    ></pm-logic>
+
+@demo
+-->
+<dom-module id="pm-logic">
+  <template>
+    <content></content>
+  </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: 'pm-logic',
+        behaviors: [OperatorBehavior, ElementBehavior]
+    });
+</script>

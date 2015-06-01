@@ -12,25 +12,51 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <title>seed-element Demo</title>
+    <title>pm-logic Demo</title>
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="../seed-element.html">
+    <link rel="import" href="../pm-logic.html">
   </head>
   <body>
 
-    <p>An example of <code>&lt;seed-element&gt;</code>:</p>
+    <p>An example of <code>&lt;pm-logic&gt;</code>:</p>
 
-    <button>Say Something</button>
+    <template is="dom-bind">
 
-    <seed-element author='{"name": "Lord Meowser", "image": "http://placekitten.com/g/200/300"}' fancy>
-      <h2>Hello seed-element</h2>
-    </seed-element>
+        <label>
+            Check if
+            <input type="text" value="{{ value1::input }}">
+        </label>
 
-    <script>
-      document.querySelector('button').addEventListener('click', function() {
-        alert(document.querySelector('seed-element').sayHello('Hallo!'));
-      });
-    </script>
+        <label>
+            is greater than
+            <input type="text" value="{{ value2::input }}">
+        </label>
+
+        <pm-logic
+            when="{{ value1 }}"
+            greater-than="{{ value2 }}"
+            valid="{{ show }}"
+            hidden$="{{ !show }}"
+            on-valid="callMe"
+        >
+            <div>Wow it's valid and I'm now shown</div>
+        </pm-logic>
+
+        <div id="viewport" style="height: 300px; background-color: green; overflow: auto;">
+            <div style="height: 1000px; position: relative;">
+                <div id="element" style="position: absolute; bottom: 0; left:0; right: 0; background-color: red;">yes</div>
+            </div>
+        </div>
+
+        <pm-logic
+            style="position: absolute; top: 0;"
+            when="#element"
+            is-in-viewport="#viewport"
+            valid="{{ isInViewport }}"
+            hidden$="{{ !isInViewport }}"
+        >is Shown</pm-logic>
+
+    </template>
 
   </body>
 </html>

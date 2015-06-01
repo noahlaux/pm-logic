@@ -1,0 +1,66 @@
+ <link rel="import" href="../../polymer/polymer.html">
+ <link rel="import" href="logic-behavior.html">
+
+ <script>
+    var behavior = {
+
+        properties: {
+            equals: String,
+            notEquals: String,
+            greaterThan: String,
+            lesserThan: String,
+            isBetween: String,
+            and: String
+        },
+
+        observers: [
+            'validate("equals", when, equals)',
+            'validate("notEquals", when, notEquals)',
+            'validate("lesserThan", when, lesserThan)',
+            'validate("lesserThanOrEquals", when, lesserThanOrEquals)',
+            'validate("greaterThan", when, greaterThan)',
+            'validate("greaterThanOrEquals", when, greaterThanOrEquals)',
+            'validate("isBetween", when, isBetween, and)'
+        ],
+
+        created: function () {
+            var validators = {
+                equals: function (a, b) {
+                    return a == b;
+                },
+
+                notEquals: function (a, b) {
+                    return a != b;
+                },
+
+                greaterThan: function (a, b) {
+                    return a > b;
+                },
+
+                greaterThanOrEquals: function (a, b) {
+                    return a >= b;
+                },
+
+                lesserThan: function (a, b) {
+                    return a < b;
+                },
+
+                lesserThanOrEquals: function (a, b) {
+                    return a <= b;
+                },
+
+                isBetween: function (value, min, max) {
+                    return !validators.lesserThanOrEquals(value, min) &&
+                        !validators.greaterThanOrEquals(value, max);
+                }
+            };
+
+            for (var name in validators) {
+                this.registerValidator(name, validators[name]);
+            }
+        }
+    };
+
+    OperatorBehavior = [LogicBehavior, behavior];
+
+</script>

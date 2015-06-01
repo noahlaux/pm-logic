@@ -1,0 +1,47 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<script>
+    LogicBehavior = {
+
+        properties: {
+
+            /**
+             * Expression to validate against
+             * @type {String}
+             */
+            when: String,
+
+            /**
+             * Indicates validaty
+             * @type {Object}
+             */
+            valid: {
+                type: Boolean,
+                notify: true,
+                value: false,
+                observer: 'validChanged'
+            }
+        },
+
+        validators: {},
+
+        /**
+         * [registerValidator description]
+         * @param  {String} name        Name of validator
+         * @param  {Function} validator Validator prototype
+         * @return N/A
+         */
+        registerValidator: function (name, validator) {
+            this.validators[name] = validator;
+        },
+
+        validate: function (validator) {
+            var operators = [].slice.call(arguments, 1);
+            this.valid = this.validators[validator].apply(this, operators);
+        },
+
+        validChanged: function (valid) {
+            this.fire(valid ? 'valid' : 'invalid');
+        }
+    };
+</script>
