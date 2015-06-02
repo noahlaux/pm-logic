@@ -33,16 +33,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </label>
 
         <pm-logic
-            when="{{ value1 }}"
-            greater-than="{{ value2 }}"
+            when="{{ value2 }}"
+            are="greaterThan"
             valid="{{ show }}"
             hidden$="{{ !show }}"
-            on-valid="callMe"
         >
             <div>Wow it's valid and I'm now shown</div>
         </pm-logic>
 
-        <div id="viewport" style="height: 300px; background-color: green; overflow: auto;">
+        <!-- div id="viewport" style="height: 300px; background-color: green; overflow: auto;">
             <div style="height: 1000px; position: relative;">
                 <div id="element" style="position: absolute; bottom: 0; left:0; right: 0; background-color: red;">yes</div>
             </div>
@@ -54,7 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             is-in-viewport="#viewport"
             valid="{{ isInViewport }}"
             hidden$="{{ !isInViewport }}"
-        >is Shown</pm-logic>
+        >is Shown</pm-logic> -->
 
     </template>
 

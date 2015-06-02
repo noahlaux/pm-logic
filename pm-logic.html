@@ -4,15 +4,21 @@
 <link rel="import" href="behaviors/element-behavior.html">
 
 <!--
-An element providing a solution to no problem in particular.
+An element providing a extendable way to declaratively describe logical patterns that evaluates and can take action.
 
 Example:
+    
+    <input type="number" value="{{ value1::input }}">
+    <input type="number" value="{{ value2::input }}">
 
     <pm-logic
-      when="1"
-      greater-than="2"
-      valid="{{ valid }}"
-    ></pm-logic>
+        when="{{ value2 }}"
+        greater-than="{{ value1 }}"
+        valid="{{ show }}"
+        hidden$="{{ !show }}"
+    >
+        <div>Yay! Value2 is greater than value1</div>
+    </pm-logic>
 
 @demo
 -->
@@ -23,8 +29,23 @@ Example:
 </dom-module>
 
 <script>
+
     Polymer({
         is: 'pm-logic',
+
+        /**
+         * The `valid` event is fired whenever `validation` is truthy.
+         *
+         * @event on-valid
+         * @detail {true}
+         */
+    
+        /**
+         * The `invalid` event is fired whenever `validation` is falsy.
+         *
+         * @event on-invalid
+         * @detail {false}
+         */
         behaviors: [OperatorBehavior, ElementBehavior]
     });
 </script>

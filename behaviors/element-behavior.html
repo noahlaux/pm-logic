@@ -2,19 +2,33 @@
 <link rel="import" href="logic-behavior.html">
 
 <script>
+    
+    /** @polymerBehavior ElementBehavior */
     var behavior = {
 
         properties: {
             isInViewport: String,
 
+            /**
+             * Node to track
+             * @type {Object}
+             */
             element: {
                 computed: 'getElement(when)'
             },
 
+            /**
+             * Viewport to track in
+             * @type {Object}
+             */
             viewport: {
                 computed: 'getViewport(isInViewport)'
             },
 
+            /**
+             * Current scroll position
+             * @type {Number}
+             */
             currentScroll: Number
         },
 

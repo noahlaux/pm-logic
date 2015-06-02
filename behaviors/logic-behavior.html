@@ -1,6 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html">
 
 <script>
+    /** @polymerBehavior LogicBehavior */
     LogicBehavior = {
 
         properties: {
@@ -9,7 +10,13 @@
              * Expression to validate against
              * @type {String}
              */
-            when: String,
+            'if': String,
+
+            /**
+             * [are description]
+             * @type {String}
+             */
+            are: String,
 
             /**
              * Indicates validaty
@@ -26,7 +33,7 @@
         validators: {},
 
         /**
-         * [registerValidator description]
+         * Register validator
          * @param  {String} name        Name of validator
          * @param  {Function} validator Validator prototype
          * @return N/A
@@ -35,6 +42,11 @@
             this.validators[name] = validator;
         },
 
+        /**
+         * Check if current validator is valid and sets `valid`
+         * @param  {String} validator [description]
+         * @return N/A
+         */
         validate: function (validator) {
             var operators = [].slice.call(arguments, 1);
             this.valid = this.validators[validator].apply(this, operators);
