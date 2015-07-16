@@ -1,0 +1,76 @@
+ <link rel="import" href="../../polymer/polymer.html">
+ <link rel="import" href="logic-behavior.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <pm-logic
+      when="1"
+      greater-than="2"
+      valid="{{ valid }}"
+    ></pm-logic>
+
+@demo
+-->
+ <script>
+
+    /** @polymerBehavior LogicOperatorBehavior */
+    var behavior = {
+
+        // properties: {
+        //     equals: String,
+        //     notEquals: String,
+        //     greaterThan: String,
+        //     lesserThan: String,
+        //     isBetween: String,
+        //     and: String
+        // },
+
+        observers: [
+            'validate(are, when, value)'
+        ],
+
+        created: function () {
+
+            var validators = {
+                equals: function (a, b) {
+                    return a == b;
+                },
+
+                notEquals: function (a, b) {
+                    return a != b;
+                },
+
+                greaterThan: function (a, b) {
+                    return a > b;
+                },
+
+                greaterThanOrEquals: function (a, b) {
+                    return a >= b;
+                },
+
+                lesserThan: function (a, b) {
+                    return a < b;
+                },
+
+                lesserThanOrEquals: function (a, b) {
+                    return a <= b;
+                },
+
+                isBetween: function (value, min, max) {
+                    return !validators.lesserThanOrEquals(value, min) &&
+                        !validators.greaterThanOrEquals(value, max);
+                }
+            };
+
+            for (var name in validators) {
+                this.registerValidator(name, validators[name]);
+            }
+        }
+    };
+
+    LogicOperatorBehavior = [LogicBehavior, behavior];
+
+</script>

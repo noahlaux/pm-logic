@@ -1,0 +1,96 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="logic-behavior.html">
+
+<script>
+
+    /** @polymerBehavior LogicElementBehavior */
+    var behavior = {
+
+        properties: {
+            isInViewport: String,
+
+            /**
+             * Node to track
+             * @type {Object}
+             */
+            element: {
+                computed: 'getElement(when)'
+            },
+
+            /**
+             * Viewport to track in
+             * @type {Object}
+             */
+            viewport: {
+                computed: 'getViewport(isInViewport)'
+            },
+
+            /**
+             * Current scroll position
+             * @type {Number}
+             */
+            currentScroll: Number
+        },
+
+        observers: [
+            'validate("isInViewport", element, viewport, currentScroll)',
+            'setupListeners(viewport)'
+        ],
+
+        ready: function () {
+            this.currentScroll = 0;
+        },
+
+        created: function () {
+            this.registerValidator('isInViewport', this.isElementInViewport.bind(this));
+        },
+
+        setupListeners: function (viewport) {
+            this.scrollListener = viewport.addEventListener('scroll', function (event) {
+                this.currentScroll = event.target.scrollTop;
+            }.bind(this));
+        },
+
+        detached: function () {
+            // TODO
+            this.viewport.removeEventListener('scroll', this.scrollListener);
+        },
+
+        isElementInViewport: function (element, viewport) {
+
+            function check () {
+                var rect     = element.getBoundingClientRect(),
+                    vWidth   = window.innerWidth || doc.documentElement.clientWidth,
+                    vHeight  = window.innerHeight || doc.documentElement.clientHeight,
+                    efp      = function (x, y) {
+                        return document.elementFromPoint(x, y);
+                    };
+
+                // Return false if it's not in the viewport
+                if (rect.right < 0 || rect.bottom < 0
+                        || rect.left > vWidth || rect.top > vHeight) {
+                    return false;
+                }
+                // Return true if any of its four corners are visible
+                return (
+                    element.contains(efp(rect.left,  rect.top)) ||
+                    element.contains(efp(rect.right, rect.top)) ||
+                    element.contains(efp(rect.right, rect.bottom)) ||
+                    element.contains(efp(rect.left,  rect.bottom))
+                );
+            }
+
+            return check();
+        },
+
+        getElement: function (selector) {
+            return this.dataHost.$$(selector);
+        },
+
+        getViewport: function (selector) {
+            return this.getElement(selector);
+        }
+    };
+
+    LogicElementBehavior = [LogicBehavior, behavior];
+</script>
