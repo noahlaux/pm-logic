@@ -37,7 +37,9 @@
 
         validate: function (validator) {
             var operators = [].slice.call(arguments, 1);
-            this.valid = this.validators[validator].apply(this, operators);
+            this.debounce('validate', function () {
+                this.set('valid', this.validators[validator].apply(this, operators));
+            }, 100);
         },
 
         validChanged: function (valid) {
