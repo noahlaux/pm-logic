@@ -97,8 +97,10 @@
         },
 
         detached: function () {
-            this.viewport.removeEventListener('scroll', this.scrollListener);
-            this.viewport.removeEventListener('resize', this.resizeListener);
+            if (this.viewport) {
+                this.viewport.removeEventListener('scroll', this.scrollListener);
+                this.viewport.removeEventListener('resize', this.resizeListener);
+            }
         }
     };
 
