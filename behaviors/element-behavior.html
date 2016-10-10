@@ -15,55 +15,74 @@
                 computed: 'getViewport(isInViewport)'
             },
 
-            currentScroll: Number
+            currentScroll: {
+                type: Number,
+                value: 0
+            },
+
+            isReady: {
+                type: Boolean,
+                value: false
+            }
         },
 
         observers: [
             'validate("isInViewport", element, viewport, currentScroll)',
-            'setupListeners(viewport)'
+            'setupListeners(viewport, isReady)'
         ],
-
-        ready: function () {
-            this.currentScroll = 0;
-        },
 
         created: function () {
             this.registerValidator('isInViewport', this.isElementInViewport.bind(this));
         },
 
-        setupListeners: function (viewport) {
-            this.scrollListener = viewport.addEventListener('scroll', function (event) {
-                this.currentScroll = event.target.scrollTop;
-            }.bind(this));
+        attached: function () {
+            this.async(function () {
+                this.set('isReady', true);
+                window.requestAnimationFrame(function () {
+                    this.validate('isInViewport', this.element, this.viewport);
+                }.bind(this));
+            }, 10);
         },
 
-        detached: function () {
-            // TODO
-            this.viewport.removeEventListener('scroll', this.scrollListener);
+        setupListeners: function (viewport) {
+            this.scrollListener = viewport.addEventListener('scroll', function (event) {
+                window.requestAnimationFrame(function () {
+                    this.currentScroll = event.target.scrollTop;
+                }.bind(this));
+            }.bind(this));
+
+            this.resizeListener = window.addEventListener('resize', function (event) {
+                window.requestAnimationFrame(function () {
+                    this.validate('isInViewport', this.element, this.viewport);
+                }.bind(this));
+            }.bind(this));
         },
 
         isElementInViewport: function (element, viewport) {
 
             function check () {
-                var rect     = element.getBoundingClientRect(),
-                    vWidth   = window.innerWidth || doc.documentElement.clientWidth,
-                    vHeight  = window.innerHeight || doc.documentElement.clientHeight,
-                    efp      = function (x, y) {
-                        return document.elementFromPoint(x, y);
-                    };
+                var rect     = element.getBoundingClientRect();
+                var vWidth   = window.innerWidth;
+                var vHeight  = window.innerHeight;
+                var efp      = function (x, y) {
+                    viewport
+                    return document.elementFromPoint(x, y);
+                };
 
                 // Return false if it's not in the viewport
                 if (rect.right < 0 || rect.bottom < 0
-                        || rect.left > vWidth || rect.top > vHeight) {
+                        || rect.left > vWidth || rect.top + 50 > vHeight) {
                     return false;
                 }
+
+                return true;
                 // Return true if any of its four corners are visible
-                return (
-                    element.contains(efp(rect.left,  rect.top)) ||
-                    element.contains(efp(rect.right, rect.top)) ||
-                    element.contains(efp(rect.right, rect.bottom)) ||
-                    element.contains(efp(rect.left,  rect.bottom))
-                );
+                // return (
+                //     element.contains(efp(rect.left,  rect.top)) ||
+                //     element.contains(efp(rect.right, rect.top)) ||
+                //     element.contains(efp(rect.right, rect.bottom)) ||
+                //     element.contains(efp(rect.left,  rect.bottom))
+                // );
             }
 
             return check();
@@ -74,7 +93,14 @@
         },
 
         getViewport: function (selector) {
-            return this.getElement(selector);
+            return typeof selector === 'object' ? selector : this.getElement(selector);
+        },
+
+        detached: function () {
+            if (this.viewport) {
+                this.viewport.removeEventListener('scroll', this.scrollListener);
+                this.viewport.removeEventListener('resize', this.resizeListener);
+            }
         }
     };
 
